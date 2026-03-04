@@ -1,0 +1,86 @@
+etsy-multi-tenant-system/
+│
+├── 📋 配置文件
+│   ├── .env.example              # 环境变量模板
+│   ├── .gitignore                # Git忽略文件
+│   └── requirements.txt          # Python依赖
+│
+├── 🚀 主程序
+│   ├── main.py                   # 主入口（命令行接口）
+│   ├── config_loader.py          # 配置加载器
+│   └── shop_registry.py          # 店铺注册表
+│
+├── 🏗️ 核心业务逻辑
+│   └── core/
+│       ├── order_processor.py    # 订单处理器
+│       ├── fulfillment.py        # 发货履约处理器
+│       └── tracking.py           # 跟踪号处理器
+│
+├── 🔌 功能模块
+│   └── modules/
+│       ├── logistics/            # 物流模块
+│       │   ├── base.py           # 物流基类
+│       │   ├── factory.py        # 物流工厂
+│       │   ├── yunexpress.py     # ⏳ 云途物流（待迁移）
+│       │   └── takesend.py       # ⏳ 泰嘉物流（待迁移）
+│       ├── email_monitor.py      # ⏳ 邮件监控（待迁移）
+│       ├── order_parser.py       # ⏳ 订单解析（待迁移）
+│       ├── product_db.py         # ⏳ 产品数据库（待迁移）
+│       ├── carrier_detector.py   # ⏳ 物流商识别（待迁移）
+│       └── label_generator.py    # ⏳ 面单生成（待迁移）
+│
+├── 🌐 外部服务
+│   └── services/
+│       ├── feishu_service.py     # ⏳ 飞书服务（待迁移）
+│       ├── etsy_service.py       # ⏳ Etsy服务（待迁移）
+│       └── sheets_service.py     # ⏳ Google Sheets（待迁移）
+│
+├── ⚙️ 配置目录
+│   └── configs/
+│       ├── global.yaml           # 全局配置
+│       └── shops/                # 店铺配置
+│           ├── template.yaml     # 配置模板
+│           ├── nature.yaml       # 大自然店铺
+│           ├── jinyalong.yaml    # 金亚龙店铺（待创建）
+│           ├── mishang.yaml      # 迷尚店铺（待创建）
+│           └── zhangjiagang.yaml # 张家港店铺（待创建）
+│
+├── 🔧 工具脚本
+│   ├── setup.sh                  # 初始化脚本
+│   └── check_config.py           # 配置验证脚本
+│
+├── 📚 文档
+│   ├── README.md                 # 项目概览
+│   ├── QUICKSTART.md             # 快速开始
+│   ├── MIGRATION.md              # 迁移指南
+│   ├── PROJECT_SUMMARY.md        # 项目总结
+│   ├── COMPLETION_REPORT.md      # 完成报告
+│   └── STRUCTURE.txt             # 项目结构（本文件）
+│
+├── 🎯 API服务（待创建）
+│   └── api/
+│       ├── app.py                # Flask应用
+│       ├── routes/               # 路由
+│       │   ├── orders.py
+│       │   ├── labels.py
+│       │   └── config.py
+│       └── Procfile              # Railway部署配置
+│
+└── 📜 用户脚本（待迁移）
+    └── scripts/
+        └── tampermonkey/
+            └── etsy-fulfiller.user.js
+
+图例：
+✅ 已完成
+⏳ 待迁移/实现
+📋 配置
+🚀 核心
+🏗️ 业务
+🔌 模块
+🌐 服务
+⚙️ 配置
+🔧 工具
+📚 文档
+🎯 API
+📜 脚本
