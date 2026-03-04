@@ -1,143 +1,204 @@
 # 店铺配置模板
+# 复制此文件并重命名为你的店铺代码，例如：my_shop.yaml
 
+# ============================================
 # 店铺基本信息
-shop_code: "nature"  # 店铺唯一标识
-shop_name: "大自然草柳编"
-enabled: true
+# ============================================
+shop_code: template  # 修改为你的店铺代码（英文，用于命令行）
+shop_name: "店铺模板"  # 修改为你的店铺名称（中文）
+enabled: true  # 是否启用此店铺
 
+# ============================================
 # Etsy 配置
+# ============================================
 etsy:
-  shop_id: "123456"
-  api_key: "${ETSY_API_KEY}"  # 支持环境变量
-  orders_url: "https://www.etsy.com/your/orders/sold/open"
+  shop_id: "your_shop_id"  # 你的Etsy店铺ID
+  api_key: "${ETSY_API_KEY}"  # Etsy API Key（建议使用环境变量）
+  api_secret: "${ETSY_API_SECRET}"  # Etsy API Secret
 
+# ============================================
 # 飞书多维表格配置
+# ============================================
 feishu:
-  app_id: "${FEISHU_APP_ID}"
-  app_secret: "${FEISHU_APP_SECRET}"
+  app_id: "${FEISHU_APP_ID}"  # 飞书应用ID
+  app_secret: "${FEISHU_APP_SECRET}"  # 飞书应用Secret
+  table_id: "tblXXXXXXXX"  # 你的多维表格ID
 
-  # 订单表
-  order_table:
-    app_token: "Cu82bgVDGaNTNsspOs4c6dAJnIc"
-    table_id: "tblWlIrPD6KZCy8U"
-    fields:
-      order_id: "Etsy订单号"
-      tracking_number: "运单号"
-      local_tracking: "运单末端号码"
-      status: "收货状态"
-      customer_name: "顾客姓名"
-      label_url: "面单链接"
+  # 字段映射（根据你的飞书表格字段名称调整）
+  field_mapping:
+    order_id: "订单号"
+    buyer_name: "买家姓名"
+    buyer_email: "买家邮箱"
+    buyer_address: "收货地址"
+    buyer_city: "城市"
+    buyer_state: "州/省"
+    buyer_zip: "邮编"
+    buyer_country: "国家"
+    product_sku: "SKU"
+    product_name: "产品名称"
+    quantity: "数量"
+    tracking_number: "跟踪号"
+    waybill_number: "运单号"
+    logistics_provider: "物流商"
+    status: "状态"
+    order_date: "下单时间"
+    ship_date: "发货时间"
+    notes: "备注"
 
-  # 跟踪表（可选）
-  tracking_table:
-    app_token: "Cu82bgVDGaNTNsspOs4c6dAJnIc"
-    table_id: "tblTracking123"
-
-# 邮件监控配置
+# ============================================
+# 邮箱监控配置
+# ============================================
 email:
-  enabled: true
-  provider: "yahoo"  # yahoo, gmail, outlook
-  address: "shop@yahoo.com"
-  password: "${YAHOO_APP_PASSWORD}"
-  imap_server: "imap.mail.yahoo.com"
-  imap_port: 993
-  check_interval: 60  # 秒
+  provider: "yahoo"  # 邮箱提供商：yahoo, gmail, outlook
+  address: "your_email@yahoo.com"  # 邮箱地址
+  password: "${EMAIL_PASSWORD}"  # 邮箱密码（建议使用环境变量）
+  imap_server: "imap.mail.yahoo.com"  # IMAP服务器
+  imap_port: 993  # IMAP端口
+  check_interval: 300  # 检查间隔（秒）
+  mark_as_read: true  # 处理后是否标记为已读
 
+# ============================================
 # 物流配置
+# ============================================
 logistics:
-  # 默认物流商
-  default_provider: "yunexpress"
+  default_provider: "yunexpress"  # 默认物流商
 
   # 云途物流
   yunexpress:
     enabled: true
-    app_id: "${YUNEXPRESS_APP_ID}"
-    app_secret: "${YUNEXPRESS_APP_SECRET}"
-    source_key: "${YUNEXPRESS_SOURCE_KEY}"
-    channels:
-      US: "USTHPHR"
-      US_ISLAND: "THPDYPY"  # 夏威夷、波多黎各
-      OTHER: "THPHR"
+    customer_id: "${YUNEXPRESS_CUSTOMER_ID}"
+    api_key: "${YUNEXPRESS_API_KEY}"
+    api_secret: "${YUNEXPRESS_API_SECRET}"
+    base_url: "https://api.yunexpress.com"
+    service_code: "CNPOST-FYB"  # 服务代码
+    label_mvp_url: ""  # Label MVP服务URL（可选）
 
   # 泰嘉物流
   takesend:
     enabled: false
     client_id: "${TAKESEND_CLIENT_ID}"
     auth_token: "${TAKESEND_AUTH_TOKEN}"
+    base_url: "http://k5.takesend.com:8180/WebCOrder"
+    label_mvp_url: ""  # Label MVP服务URL（可选）
+
+    # 国家渠道映射
     channels:
-      US: "US_CN_A"
-      GB: "UK_EXCN"
-      DE: "DE_P_CN"
-      FR: "FR_EXCN"
-      CA: "CA_E_CN"
-      AU: "AU_eParcel"
+      US: "TKGZ-US"  # 美国
+      CA: "TKGZ-CA"  # 加拿大
+      GB: "TKGZ-GB"  # 英国
+      AU: "TKGZ-AU"  # 澳大利亚
 
-# SKU 规则（用于判断使用哪个物流商）
+# ============================================
+# SKU规则配置
+# ============================================
 sku_rules:
-  # SKU前缀匹配物流商
+  # SKU前缀映射到物流商
   prefix_mapping:
-    "Nature": "yunexpress"
-    "XCFQ": "yunexpress"
-    "hangzhou": "yunexpress"
+    "US-": "takesend"    # US- 开头的SKU使用泰嘉物流
+    "EU-": "yunexpress"  # EU- 开头的SKU使用云途物流
+    "CN-": "yunexpress"  # CN- 开头的SKU使用云途物流
 
-  # 供应商映射
-  supplier_mapping:
-    "Nature": "大自然"
-    "XCFQ": "大自然"
-    "hangzhou": "大自然"
+  # 国家映射到物流商（优先级低于SKU前缀）
+  country_mapping:
+    US: "takesend"
+    CA: "takesend"
+    GB: "yunexpress"
+    DE: "yunexpress"
+    FR: "yunexpress"
 
-# 产品数据库
-products:
-  source: "json"  # json, feishu, api
-  file_path: "./data/products_nature.json"
-
+# ============================================
 # 发件人信息
+# ============================================
 sender:
-  first_name: "Xiaokang"
-  last_name: "Tian"
-  company: "StrawCrafters"
+  first_name: "Your"
+  last_name: "Name"
+  company: "Your Company"
   country_code: "CN"
-  province: "Shandong"
-  city: "Zibo City"
-  address: "Building 11, Unit 2, Room 1403"
-  postal_code: "255005"
-  phone: "15387963207"
-  email: ""
+  province: "Your Province"
+  city: "Your City"
+  address: "Your Address"
+  postal_code: "000000"
+  phone: "00000000000"
+  email: "your_email@example.com"
 
-# 任务调度
-schedule:
-  # 订单处理
-  process_orders:
-    enabled: true
-    cron: "*/5 * * * *"  # 每5分钟
-
-  # 跟踪号回填
-  return_tracking:
-    enabled: true
-    cron: "0 */2 * * *"  # 每2小时
-
-  # 利润计算
-  calculate_profit:
-    enabled: false
-    cron: "0 0 * * *"  # 每天0点
-
+# ============================================
 # 功能开关
+# ============================================
 features:
-  auto_order_processing: true
-  auto_tracking_return: true
-  auto_review_invite: false
-  profit_calculation: false
-  label_generation: true
+  auto_review: true          # 自动好评
+  auto_tracking: true        # 自动回传跟踪号
+  email_monitoring: true     # 邮箱监控
+  order_processing: true     # 订单处理
+  fulfillment: true          # 发货履约
+  label_generation: true     # 面单生成
 
+# ============================================
+# IOSS配置（欧盟订单）
+# ============================================
+ioss:
+  enabled: true
+  code: "IM3720000224"  # 你的IOSS代码
+
+# ============================================
+# AI配置（订单解析）
+# ============================================
+ai:
+  provider: "openai"  # AI提供商：openai, anthropic
+  model: "gpt-4"  # 模型名称
+  api_key: "${OPENAI_API_KEY}"  # API Key
+  temperature: 0.1  # 温度参数（0-1，越低越确定）
+  max_tokens: 2000  # 最大token数
+
+# ============================================
+# 浏览器自动化配置
+# ============================================
+browser:
+  headless: true  # 是否无头模式
+  timeout: 30000  # 超时时间（毫秒）
+  user_data_dir: ""  # 用户数据目录（保存登录状态）
+
+# ============================================
 # 日志配置
+# ============================================
 logging:
-  level: "INFO"
-  file: "logs/nature.log"
-  rotation: "10 MB"
-  retention: "7 days"
+  level: "INFO"  # 日志级别：DEBUG, INFO, WARNING, ERROR
+  file: "logs/{shop_code}.log"  # 日志文件路径
+  rotation: "1 day"  # 日志轮转周期
+  retention: "30 days"  # 日志保留时间
 
-# Google Sheets 日志（可选）
-google_sheets:
-  enabled: false
-  spreadsheet_id: ""
-  sheet_name: "订单日志"
+# ============================================
+# 通知配置
+# ============================================
+notifications:
+  # 飞书机器人通知
+  feishu_bot:
+    enabled: false
+    webhook_url: "${FEISHU_BOT_WEBHOOK}"
+
+  # 邮件通知
+  email:
+    enabled: false
+    smtp_server: "smtp.gmail.com"
+    smtp_port: 587
+    from_address: "notifications@example.com"
+    to_addresses:
+      - "admin@example.com"
+
+# ============================================
+# 高级配置
+# ============================================
+advanced:
+  # 重试配置
+  retry:
+    max_attempts: 3
+    delay: 5  # 秒
+    backoff: 2  # 指数退避系数
+
+  # 并发配置
+  concurrency:
+    max_workers: 5  # 最大并发数
+
+  # 缓存配置
+  cache:
+    enabled: true
+    ttl: 3600  # 缓存过期时间（秒）
