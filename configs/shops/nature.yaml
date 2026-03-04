@@ -37,8 +37,9 @@ email:
 
 # 物流配置
 logistics:
-  default_provider: "yunexpress"
+  default_provider: "yunexpress"  # 默认使用云途物流
 
+  # 🎯 云途物流（标配，必须启用）
   yunexpress:
     enabled: true
     app_id: "${YUNEXPRESS_APP_ID}"
@@ -49,8 +50,9 @@ logistics:
       US_ISLAND: "THPDYPY"
       OTHER: "THPHR"
 
+  # 🎯 泰嘉物流（可选，大自然店铺不使用）
   takesend:
-    enabled: false
+    enabled: false  # ❌ 大自然店铺不使用泰嘉物流
 
 # SKU 规则
 sku_rules:

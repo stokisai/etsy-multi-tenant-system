@@ -37,13 +37,22 @@ email:
 
 # 物流配置
 logistics:
-  default_provider: "takesend"
+  default_provider: "takesend"  # 迷尚店铺默认使用泰嘉物流
 
+  # 🎯 云途物流（标配，作为备用）
   yunexpress:
-    enabled: false
-
-  takesend:
     enabled: true
+    app_id: "${YUNEXPRESS_APP_ID}"
+    app_secret: "${YUNEXPRESS_APP_SECRET}"
+    source_key: "${YUNEXPRESS_SOURCE_KEY}"
+    channels:
+      US: "USTHPHR"
+      US_ISLAND: "THPDYPY"
+      OTHER: "THPHR"
+
+  # 🎯 泰嘉物流（可选，迷尚店铺使用）
+  takesend:
+    enabled: true  # ✅ 迷尚店铺使用泰嘉物流
     client_id: "${TAKESEND_CLIENT_ID}"
     auth_token: "${TAKESEND_AUTH_TOKEN}"
     base_url: "http://k5.takesend.com:8180/WebCOrder"
