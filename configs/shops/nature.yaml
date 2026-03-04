@@ -1,0 +1,132 @@
+# 大自然草柳编店铺配置
+
+shop_code: "nature"
+shop_name: "大自然草柳编"
+enabled: true
+
+# Etsy 配置
+etsy:
+  shop_id: "nature_shop_id"
+  orders_url: "https://www.etsy.com/your/orders/sold/open"
+
+# 飞书多维表格配置
+feishu:
+  app_id: "${FEISHU_APP_ID}"
+  app_secret: "${FEISHU_APP_SECRET}"
+
+  order_table:
+    app_token: "Cu82bgVDGaNTNsspOs4c6dAJnIc"
+    table_id: "tblWlIrPD6KZCy8U"
+    fields:
+      order_id: "Etsy订单号"
+      tracking_number: "运单号"
+      local_tracking: "运单末端号码"
+      status: "收货状态"
+      customer_name: "顾客姓名"
+      label_url: "面单链接"
+
+# 邮件监控配置
+email:
+  enabled: true
+  provider: "yahoo"
+  address: "${YAHOO_EMAIL}"
+  password: "${YAHOO_APP_PASSWORD}"
+  imap_server: "imap.mail.yahoo.com"
+  imap_port: 993
+  check_interval: 60
+
+# 物流配置
+logistics:
+  default_provider: "yunexpress"
+
+  yunexpress:
+    enabled: true
+    app_id: "${YUNEXPRESS_APP_ID}"
+    app_secret: "${YUNEXPRESS_APP_SECRET}"
+    source_key: "${YUNEXPRESS_SOURCE_KEY}"
+    channels:
+      US: "USTHPHR"
+      US_ISLAND: "THPDYPY"
+      OTHER: "THPHR"
+
+  takesend:
+    enabled: false
+
+# SKU 规则
+sku_rules:
+  prefix_mapping:
+    "Nature": "yunexpress"
+    "XCFQ": "yunexpress"
+    "hangzhou": "yunexpress"
+
+  supplier_mapping:
+    "Nature": "大自然"
+    "XCFQ": "大自然"
+    "hangzhou": "大自然"
+
+# 产品数据库
+products:
+  source: "json"
+  file_path: "./data/products_nature.json"
+
+# 发件人信息
+sender:
+  first_name: "Xiaokang"
+  last_name: "Tian"
+  company: "StrawCrafters"
+  country_code: "CN"
+  province: "Shandong"
+  city: "Zibo City"
+  address: "Building 11, Unit 2, Room 1403"
+  postal_code: "255005"
+  phone: "15387963207"
+  email: ""
+
+# 任务调度
+schedule:
+  process_orders:
+    enabled: true
+    cron: "*/5 * * * *"
+
+  return_tracking:
+    enabled: true
+    cron: "0 */2 * * *"
+
+  calculate_profit:
+    enabled: false
+
+# 功能开关
+features:
+  auto_order_processing: true
+  auto_tracking_return: true
+  auto_review_invite: false
+  profit_calculation: false
+  label_generation: true
+
+# ============================================
+# 店铺特定业务规则
+# ============================================
+business_rules:
+  # 下单时的特殊处理
+  order_submission:
+    add_custom_note: false  # 是否添加自定义备注
+    custom_note: ""  # 自定义备注内容
+    require_signature: false  # 是否需要签名
+    insurance_required: false  # 是否需要保险
+
+  # 地址验证规则
+  address_validation:
+    strict_mode: false  # 严格模式
+    allow_po_box: true  # 是否允许PO Box
+    require_phone: false  # 是否必须有电话
+
+  # 价格计算规则
+  pricing:
+    apply_discount: false  # 是否应用折扣
+    discount_rate: 0.0  # 折扣率
+    min_order_value: 0.0  # 最小订单金额
+
+# 日志配置
+logging:
+  level: "INFO"
+  file: "logs/nature.log"
