@@ -1,0 +1,143 @@
+# 店铺配置模板
+
+# 店铺基本信息
+shop_code: "nature"  # 店铺唯一标识
+shop_name: "大自然草柳编"
+enabled: true
+
+# Etsy 配置
+etsy:
+  shop_id: "123456"
+  api_key: "${ETSY_API_KEY}"  # 支持环境变量
+  orders_url: "https://www.etsy.com/your/orders/sold/open"
+
+# 飞书多维表格配置
+feishu:
+  app_id: "${FEISHU_APP_ID}"
+  app_secret: "${FEISHU_APP_SECRET}"
+
+  # 订单表
+  order_table:
+    app_token: "Cu82bgVDGaNTNsspOs4c6dAJnIc"
+    table_id: "tblWlIrPD6KZCy8U"
+    fields:
+      order_id: "Etsy订单号"
+      tracking_number: "运单号"
+      local_tracking: "运单末端号码"
+      status: "收货状态"
+      customer_name: "顾客姓名"
+      label_url: "面单链接"
+
+  # 跟踪表（可选）
+  tracking_table:
+    app_token: "Cu82bgVDGaNTNsspOs4c6dAJnIc"
+    table_id: "tblTracking123"
+
+# 邮件监控配置
+email:
+  enabled: true
+  provider: "yahoo"  # yahoo, gmail, outlook
+  address: "shop@yahoo.com"
+  password: "${YAHOO_APP_PASSWORD}"
+  imap_server: "imap.mail.yahoo.com"
+  imap_port: 993
+  check_interval: 60  # 秒
+
+# 物流配置
+logistics:
+  # 默认物流商
+  default_provider: "yunexpress"
+
+  # 云途物流
+  yunexpress:
+    enabled: true
+    app_id: "${YUNEXPRESS_APP_ID}"
+    app_secret: "${YUNEXPRESS_APP_SECRET}"
+    source_key: "${YUNEXPRESS_SOURCE_KEY}"
+    channels:
+      US: "USTHPHR"
+      US_ISLAND: "THPDYPY"  # 夏威夷、波多黎各
+      OTHER: "THPHR"
+
+  # 泰嘉物流
+  takesend:
+    enabled: false
+    client_id: "${TAKESEND_CLIENT_ID}"
+    auth_token: "${TAKESEND_AUTH_TOKEN}"
+    channels:
+      US: "US_CN_A"
+      GB: "UK_EXCN"
+      DE: "DE_P_CN"
+      FR: "FR_EXCN"
+      CA: "CA_E_CN"
+      AU: "AU_eParcel"
+
+# SKU 规则（用于判断使用哪个物流商）
+sku_rules:
+  # SKU前缀匹配物流商
+  prefix_mapping:
+    "Nature": "yunexpress"
+    "XCFQ": "yunexpress"
+    "hangzhou": "yunexpress"
+
+  # 供应商映射
+  supplier_mapping:
+    "Nature": "大自然"
+    "XCFQ": "大自然"
+    "hangzhou": "大自然"
+
+# 产品数据库
+products:
+  source: "json"  # json, feishu, api
+  file_path: "./data/products_nature.json"
+
+# 发件人信息
+sender:
+  first_name: "Xiaokang"
+  last_name: "Tian"
+  company: "StrawCrafters"
+  country_code: "CN"
+  province: "Shandong"
+  city: "Zibo City"
+  address: "Building 11, Unit 2, Room 1403"
+  postal_code: "255005"
+  phone: "15387963207"
+  email: ""
+
+# 任务调度
+schedule:
+  # 订单处理
+  process_orders:
+    enabled: true
+    cron: "*/5 * * * *"  # 每5分钟
+
+  # 跟踪号回填
+  return_tracking:
+    enabled: true
+    cron: "0 */2 * * *"  # 每2小时
+
+  # 利润计算
+  calculate_profit:
+    enabled: false
+    cron: "0 0 * * *"  # 每天0点
+
+# 功能开关
+features:
+  auto_order_processing: true
+  auto_tracking_return: true
+  auto_review_invite: false
+  profit_calculation: false
+  label_generation: true
+
+# 日志配置
+logging:
+  level: "INFO"
+  file: "logs/nature.log"
+  rotation: "10 MB"
+  retention: "7 days"
+
+# Google Sheets 日志（可选）
+google_sheets:
+  enabled: false
+  spreadsheet_id: ""
+  sheet_name: "订单日志"

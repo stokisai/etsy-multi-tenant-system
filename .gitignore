@@ -1,0 +1,39 @@
+# Etsy Multi-Tenant System
+
+.env
+*.log
+logs/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 店铺配置（包含敏感信息）
+configs/shops/*.yaml
+!configs/shops/template.yaml
+
+# 产品数据
+data/products_*.json
+
+# Chrome用户数据
+.etsy-chrome-profile/
