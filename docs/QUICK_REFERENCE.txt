@@ -1,0 +1,109 @@
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  🚀 店铺代码提交 - 快速参考卡片                              │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+📝 提交流程（3步）
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣  修改代码
+   vim plugins/shops/mishang/order_logic.py
+
+2️⃣  提交（只需要店铺ID）
+   git add plugins/shops/mishang/
+   git commit -m "[mishang] 添加易碎品检查"
+
+3️⃣  推送
+   git push && git push --tags
+
+✨ 系统自动完成：
+   ✅ 自动生成版本号
+   ✅ 自动创建标签
+   ✅ Railway 自动部署
+
+
+🏷️  提交信息格式
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+格式：[shop_code] 描述
+
+示例：
+  [mishang] Add 易碎品检查
+  [nature] Fix SKU匹配bug
+  [jinyalong] Update 订单验证逻辑
+
+⚠️  注意：
+  - 必须以 [shop_code] 开头
+  - shop_code 必须小写
+  - 不要手动添加版本号（系统自动添加）
+
+
+📊 版本号规则
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+提交类型          版本号变化        示例
+────────────────────────────────────────────────
+Add/Update        minor +1         v1.1.0 → v1.2.0
+Fix/修复          patch +1         v1.1.0 → v1.1.1
+Refactor/重构     major +1         v1.1.0 → v2.0.0
+
+
+🔍 常用命令
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+查看版本历史：
+  git tag -l "mishang-v*"
+
+查看提交历史：
+  git log --grep="mishang" --oneline
+
+查看最新版本：
+  git tag -l "mishang-v*" | tail -1
+
+查看代码差异：
+  git diff plugins/shops/mishang/
+
+
+🎯 完整示例
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# 场景：修改迷尚店铺的订单逻辑
+
+cd /Users/stokist/etsy-multi-tenant-system
+git pull
+vim plugins/shops/mishang/order_logic.py
+git add plugins/shops/mishang/
+git commit -m "[mishang] Add 易碎品检查功能"
+git push && git push --tags
+
+# 输出：
+# ✅ 自动添加版本号: v1.2.0
+# ✅ 自动创建标签: mishang-v1.2.0
+# Railway 自动部署中...
+
+
+📚 详细文档
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+超简单版：docs/SIMPLE_COMMIT_GUIDE.md
+详细版：  docs/SHOP_CODE_COMMIT_GUIDE.md
+架构说明：docs/SHOP_SPECIFIC_CODE_MANAGEMENT.md
+
+
+💡 提示
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ 推送时记得推送标签：git push && git push --tags
+✅ 提交前先拉取：git pull
+✅ 只添加相关文件：git add plugins/shops/mishang/
+✅ 提交信息要清晰：[mishang] Add 易碎品检查
+
+❌ 不要用 git add .（可能包含不相关文件）
+❌ 不要手动添加版本号（系统自动添加）
+❌ 不要忘记推送标签（Railway 需要）
+
+
+┌─────────────────────────────────────────────────────────────┐
+│  🎉 就这么简单！3步完成，系统自动处理其他所有事情！           │
+└─────────────────────────────────────────────────────────────┘
