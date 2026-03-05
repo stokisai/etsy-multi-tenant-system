@@ -232,4 +232,9 @@ python main.py --shop nature --task process_orders --dry-run
 - **[📖 项目总结](./docs/PROJECT_SUMMARY.md)** - 项目架构和设计
 - **[🔄 迁移指南](./docs/MIGRATION.md)** - 从旧仓库迁移
 
+### 开发者文档
+- **[🔧 店铺特定代码管理](./docs/SHOP_SPECIFIC_CODE_MANAGEMENT.md)** - 店铺特定逻辑的版本管理
+- **[✨ 超简单提交指南](./docs/SIMPLE_COMMIT_GUIDE.md)** - 3步提交，自动版本号 ⭐⭐⭐
+- **[📝 详细提交指南](./docs/SHOP_CODE_COMMIT_GUIDE.md)** - 完整的提交流程说明
+
 ---
