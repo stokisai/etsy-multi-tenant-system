@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# Git Commit Message Hook
+# 自动为店铺特定代码添加版本号和标签
+
+# 获取提交信息文件
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# 检查是否是店铺特定提交（包含 [shop_code]）
+if [[ $COMMIT_MSG =~ ^\[([a-z]+)\] ]]; then
+    SHOP_CODE="${BASH_REMATCH[1]}"
+
+    # 获取当前最新版本
+    LATEST_TAG=$(git tag -l "${SHOP_CODE}-v*" | sort -V | tail -1)
+
+    if [ -z "$LATEST_TAG" ]; then
+        # 如果没有版本历史，从 v1.0.0 开始
+        NEW_VERSION="1.0.0"
+    else
+        # 提取版本号
+        CURRENT_VERSION=$(echo "$LATEST_TAG" | sed "s/${SHOP_CODE}-v//")
+
+        # 解析版本号
+        IFS='.' read -r -a VERSION_PARTS <<< "$CURRENT_VERSION"
+        MAJOR="${VERSION_PARTS[0]}"
+        MINOR="${VERSION_PARTS[1]}"
+        PATCH="${VERSION_PARTS[2]}"
+
+        # 根据提交类型决定版本号
+        if [[ $COMMIT_MSG =~ (Add|Update|Refactor) ]]; then
+            # 新功能或重构：minor +1
+            MINOR=$((MINOR + 1))
+            PATCH=0
+        else
+            # 其他（Fix等）：patch +1
+            PATCH=$((PATCH + 1))
+        fi
+
+        NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+    fi
+
+    # 在提交信息末尾添加版本号（如果还没有）
+    if [[ ! $COMMIT_MSG =~ v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+        # 在第一行末尾添加版本号
+        FIRST_LINE=$(echo "$COMMIT_MSG" | head -1)
+        REST_LINES=$(echo "$COMMIT_MSG" | tail -n +2)
+
+        NEW_FIRST_LINE="${FIRST_LINE} v${NEW_VERSION}"
+
+        # 写回提交信息
+        echo "$NEW_FIRST_LINE" > "$COMMIT_MSG_FILE"
+        if [ -n "$REST_LINES" ]; then
+            echo "$REST_LINES" >> "$COMMIT_MSG_FILE"
+        fi
+
+        echo "✅ 自动添加版本号: v${NEW_VERSION}"
+    fi
+
+    # 保存版本号和店铺代码，供 post-commit hook 使用
+    echo "${SHOP_CODE}:${NEW_VERSION}" > .git/SHOP_VERSION_INFO
+fi
+
+exit 0
