@@ -85,41 +85,41 @@
   // 配置多个飞书表格
   function promptConfigureTables() {
     const currentTables = getAllTables();
-    
-    let configText = "请输入飞书表格配置（每行一个表格，格式：店铺名称|App Token|Table ID）\n\n";
+
+    let configText = "请输入飞书表格配置（每行一个表格，格式：店铺名称 --- App Token --- Table ID）\n\n";
     configText += "示例：\n";
-    configText += "大自然草柳编|Cu82bgVDGaNTNsspOs4c6dAJnIc|tblWlIrPD6KZCy8U\n";
-    configText += "迷尚首饰订单|MStWbahj8at2ZvsnheqcJtm2nYb|tblalRxohrGovqXK\n\n";
+    configText += "大自然草柳编 --- Cu82bgVDGaNTNsspOs4c6dAJnIc --- tblWlIrPD6KZCy8U\n";
+    configText += "迷尚首饰订单 --- MStWbahj8at2ZvsnheqcJtm2nYb --- tblalRxohrGovqXK\n\n";
     configText += "当前配置：\n";
-    
+
     if (currentTables.length === 0) {
       configText += "（暂无配置）";
     } else {
       currentTables.forEach(t => {
-        configText += `${t.name}|${t.app_token}|${t.table_id}\n`;
+        configText += `${t.name} --- ${t.app_token} --- ${t.table_id}\n`;
       });
     }
 
-    const input = prompt(configText, currentTables.map(t => `${t.name}|${t.app_token}|${t.table_id}`).join("\n"));
+    const input = prompt(configText, currentTables.map(t => `${t.name} --- ${t.app_token} --- ${t.table_id}`).join("\n"));
     if (input === null) return;
 
     // 解析输入
     const lines = input.trim().split("\n").filter(line => line.trim());
     const tables = [];
-    
+
     for (const line of lines) {
-      const parts = line.split("|").map(p => p.trim());
+      const parts = line.split("---").map(p => p.trim());
       if (parts.length !== 3) {
-        alert(`❌ 格式错误：${line}\n\n正确格式：店铺名称|App Token|Table ID`);
+        alert(`❌ 格式错误：${line}\n\n正确格式：店铺名称 --- App Token --- Table ID`);
         return;
       }
-      
+
       const [name, app_token, table_id] = parts;
       if (!name || !app_token || !table_id) {
         alert(`❌ 配置不完整：${line}`);
         return;
       }
-      
+
       tables.push({ name, app_token, table_id });
     }
 
