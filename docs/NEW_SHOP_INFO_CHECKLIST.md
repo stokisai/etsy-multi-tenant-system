@@ -35,13 +35,24 @@
 ---
 
 #### 4. 邮箱信息
-- [ ] **邮箱地址**
-  - 示例：`your_shop@yahoo.com`
+- [ ] **邮箱提供商**
+  - 选择：`yahoo`, `gmail`, 或 `outlook`
   - 用途：接收 Etsy 订单通知邮件
 
-- [ ] **邮箱密码**（应用专用密码）
-  - Yahoo 邮箱：需要生成应用专用密码
-  - 在哪里生成：Yahoo 账户安全设置 → 生成应用密码
+- [ ] **邮箱地址**
+  - 示例：`your_shop@yahoo.com`
+  - 注意：每个店铺使用不同的邮箱
+
+- [ ] **邮箱应用专用密码**
+  - 不是登录密码，而是应用专用密码
+  - Yahoo：在账户安全设置中生成
+  - Gmail：在 Google 账户安全设置中生成
+  - Outlook：在 Microsoft 账户安全设置中生成
+
+- [ ] **IMAP 服务器**（根据邮箱提供商选择）
+  - Yahoo：`imap.mail.yahoo.com`
+  - Gmail：`imap.gmail.com`
+  - Outlook：`outlook.office365.com`
 
 ---
 
@@ -170,8 +181,10 @@ feishu:
 
 # 4. 邮箱配置
 email:
+  provider: "yahoo"  # 或 gmail, outlook
   address: "jinyalong@yahoo.com"
-  password: "${YAHOO_EMAIL_PASSWORD}"  # 保持不变
+  password: "abcd efgh ijkl mnop"  # 应用专用密码
+  imap_server: "imap.mail.yahoo.com"  # 根据提供商选择
 
 # 5. 物流配置
 logistics:
@@ -206,13 +219,12 @@ sender:
 ### 不需要填写的信息（使用环境变量）
 以下信息已经在环境变量中配置，**不需要在配置文件中修改**：
 
-- ❌ `FEISHU_APP_ID` - 飞书应用 ID
-- ❌ `FEISHU_APP_SECRET` - 飞书应用密钥
-- ❌ `YUNEXPRESS_APP_ID` - 云途 App ID
-- ❌ `YUNEXPRESS_APP_SECRET` - 云途 App Secret
-- ❌ `TAKESEND_CLIENT_ID` - 泰嘉 Client ID
-- ❌ `TAKESEND_AUTH_TOKEN` - 泰嘉 Auth Token
-- ❌ `YAHOO_EMAIL_PASSWORD` - Yahoo 邮箱密码
+- ❌ `FEISHU_APP_ID` - 飞书应用 ID（所有店铺共享）
+- ❌ `FEISHU_APP_SECRET` - 飞书应用密钥（所有店铺共享）
+- ❌ `YUNEXPRESS_APP_ID` - 云途 App ID（所有店铺共享）
+- ❌ `YUNEXPRESS_APP_SECRET` - 云途 App Secret（所有店铺共享）
+- ❌ `TAKESEND_CLIENT_ID` - 泰嘉 Client ID（所有店铺共享）
+- ❌ `TAKESEND_AUTH_TOKEN` - 泰嘉 Auth Token（所有店铺共享）
 
 这些信息在 `.env` 文件或 Railway Variables 中配置，所有店铺共享。
 
@@ -306,3 +318,97 @@ logistics:
 如果在配置过程中遇到问题，请查看：
 - [故障排查指南](./TROUBLESHOOTING.md)
 - [完整文档列表](../README.md#文档)
+
+---
+
+## 📧 邮箱配置详细说明
+
+### 为什么每个店铺需要独立的邮箱配置？
+
+每个店铺在 Etsy 注册时使用的邮箱都不同：
+- 有的使用 Yahoo 邮箱
+- 有的使用 Gmail 邮箱
+- 有的使用 Outlook 邮箱
+
+因此，每个店铺的邮箱配置都需要单独填写。
+
+### 邮箱配置示例
+
+#### 示例1：Yahoo 邮箱
+```yaml
+email:
+  provider: "yahoo"
+  address: "nature_shop@yahoo.com"
+  password: "abcd efgh ijkl mnop"  # Yahoo 应用专用密码
+  imap_server: "imap.mail.yahoo.com"
+  imap_port: 993
+```
+
+#### 示例2：Gmail 邮箱
+```yaml
+email:
+  provider: "gmail"
+  address: "mishang_shop@gmail.com"
+  password: "abcd efgh ijkl mnop"  # Google 应用专用密码
+  imap_server: "imap.gmail.com"
+  imap_port: 993
+```
+
+#### 示例3：Outlook 邮箱
+```yaml
+email:
+  provider: "outlook"
+  address: "jinyalong_shop@outlook.com"
+  password: "abcd efgh ijkl mnop"  # Microsoft 应用专用密码
+  imap_server: "outlook.office365.com"
+  imap_port: 993
+```
+
+### 如何生成应用专用密码？
+
+#### Yahoo 邮箱
+1. 登录 Yahoo 账户：https://login.yahoo.com/
+2. 进入账户安全设置
+3. 找到 "生成应用密码" 或 "App passwords"
+4. 选择 "其他应用"，输入名称（如 "Etsy Automation"）
+5. 点击 "生成"，复制生成的密码
+6. 将密码填入配置文件（格式：`abcd efgh ijkl mnop`）
+
+#### Gmail 邮箱
+1. 登录 Google 账户：https://myaccount.google.com/
+2. 进入 "安全性" → "两步验证"（必须先启用）
+3. 找到 "应用专用密码" 或 "App passwords"
+4. 选择 "邮件" 和 "其他设备"
+5. 点击 "生成"，复制生成的密码
+6. 将密码填入配置文件
+
+#### Outlook 邮箱
+1. 登录 Microsoft 账户：https://account.microsoft.com/
+2. 进入 "安全性" → "高级安全选项"
+3. 找到 "应用密码"
+4. 点击 "创建新的应用密码"
+5. 复制生成的密码
+6. 将密码填入配置文件
+
+### ⚠️ 重要提示
+
+1. **不要使用登录密码**
+   - 配置文件中的密码必须是"应用专用密码"
+   - 不是你登录邮箱时使用的密码
+
+2. **密码格式**
+   - 应用专用密码通常是 16 位字符
+   - 可能包含空格（如 `abcd efgh ijkl mnop`）
+   - 直接复制粘贴到配置文件中
+
+3. **安全性**
+   - 配置文件已被 `.gitignore` 保护，不会提交到 Git
+   - 密码只保存在本地
+   - 不要将配置文件分享给他人
+
+4. **测试邮箱连接**
+   ```bash
+   # 验证邮箱配置是否正确
+   python main.py --shop your_shop --task test_email
+   ```
+

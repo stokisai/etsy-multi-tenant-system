@@ -50,10 +50,16 @@ feishu:
 # ============================================
 email:
   provider: "yahoo"  # 邮箱提供商：yahoo, gmail, outlook
-  address: "your_email@yahoo.com"  # 邮箱地址
-  password: "${EMAIL_PASSWORD}"  # 邮箱密码（建议使用环境变量）
-  imap_server: "imap.mail.yahoo.com"  # IMAP服务器
-  imap_port: 993  # IMAP端口
+  address: "your_email@yahoo.com"  # 填入此店铺的邮箱地址
+  password: "your_app_password"  # 填入此店铺的邮箱应用专用密码
+
+  # IMAP 服务器配置（根据邮箱提供商选择）
+  # Yahoo: imap.mail.yahoo.com:993
+  # Gmail: imap.gmail.com:993
+  # Outlook: outlook.office365.com:993
+  imap_server: "imap.mail.yahoo.com"  # 根据邮箱提供商修改
+  imap_port: 993  # 通常都是 993
+
   check_interval: 300  # 检查间隔（秒）
   mark_as_read: true  # 处理后是否标记为已读
 
