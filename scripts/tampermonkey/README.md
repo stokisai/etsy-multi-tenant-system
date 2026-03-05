@@ -23,20 +23,20 @@
 
 ## 📂 脚本列表
 
-### 1. `yunexpress-order-sync.user.js`
+### 1. `yunexpress-feishu-shipped.user.js` (v3.2.0)
 **功能：** 从云途后台拉取订单信息并同步到飞书
 
 **匹配网址：**
 ```
-https://www.yunexpress.com/*
+*://oms2.yunexpress.cn/*
 ```
 
 **主要功能：**
-- 自动登录云途后台
-- 拉取运单号列表
-- 获取跟踪号
-- 获取收货状态
-- 批量同步到飞书多维表格
+- 扫描云途后台订单
+- 自动同步「已发货」和「已收货」状态到飞书多维表格
+- 支持多个飞书表格同步
+- 同步跟踪号（运单号和运单末端号码）
+- 蓝色按钮一键全同步
 
 ## 🚀 安装步骤
 
@@ -48,19 +48,29 @@ https://www.yunexpress.com/*
 1. 点击 Tampermonkey 图标
 2. 选择 "管理面板"
 3. 点击 "实用工具" 标签
-4. 在 "从 URL 安装" 或 "从文件安装" 导入脚本
+4. 在 "从 URL 安装" 或 "从文件安装" 导入脚本：
+   - 文件路径：`scripts/tampermonkey/yunexpress-feishu-shipped.user.js`
 
 ### 3. 配置脚本
 在脚本中配置以下信息：
 ```javascript
-// 飞书配置
-const FEISHU_APP_ID = 'your_app_id';
-const FEISHU_APP_SECRET = 'your_app_secret';
-const FEISHU_APP_TOKEN = 'your_table_app_token';
-const FEISHU_TABLE_ID = 'your_table_id';
+// 飞书配置（使用 Tampermonkey 存储）
+// 在浏览器控制台执行：
+GM_setValue('feishu_app_id', 'cli_a5d8xxxxxx');
+GM_setValue('feishu_app_secret', 'your_app_secret');
 
-// 店铺代码
-const SHOP_CODE = 'nature'; // 或 'mishang', 'jinyalong'
+// 或者使用脚本内置的配置界面
+```
+
+**飞书表格配置：**
+脚本已内置多个飞书表格配置，在脚本第 30-35 行：
+```javascript
+const FEISHU_TABLES = [
+  { app_token: 'XsiMbfp5NaWUVgsVUUccHUtMn0d', table_id: 'tblao72mWjoXKR6h', name: '表1-上门取件' },
+  { app_token: 'MStWbahj8at2ZvsnheqcJtm2nYb', table_id: 'tblalRxohrGovqXK', name: '表2-上门取件' },
+  { app_token: 'ACZYbcb3saKLuPsRQ2pc4jsEn3D', table_id: 'tblCCz6WAM1SGQO0', name: '表3-上门取件' },
+  { app_token: 'Cu82bgVDGaNTNsspOs4c6dAJnIc', table_id: 'tblWlIrPD6KZCy8U', name: '表4-上门取件' },
+];
 ```
 
 ## 🔄 数据流向
