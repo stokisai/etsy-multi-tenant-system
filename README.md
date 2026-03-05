@@ -64,10 +64,7 @@ etsy-multi-tenant-system/
 │
 ├── configs/                   # 店铺配置
 │   ├── shops/
-│   │   ├── nature.yaml        # 大自然店铺
-│   │   ├── jinyalong.yaml     # 金亚龙店铺
-│   │   ├── mishang.yaml       # 迷尚店铺
-│   │   └── zhangjiagang.yaml  # 张家港店铺
+│   │   └── template.yaml      # 配置模板（其他店铺配置在本地，不提交到Git）
 │   └── global.yaml            # 全局配置
 │
 ├── scripts/                   # 用户脚本
@@ -176,15 +173,23 @@ python main.py --shop my_new_shop --task process_orders
 ### 方式二：手动创建配置
 
 ```bash
-# 复制模板
+# 1. 复制模板
 cp configs/shops/template.yaml configs/shops/myshop.yaml
 
-# 编辑配置
+# 2. 编辑配置，填入你的店铺信息
 vim configs/shops/myshop.yaml
 
-# 运行
+# 3. 配置文件会自动被 .gitignore 忽略，不会提交到 Git
+
+# 4. 运行
 python main.py --shop myshop --task process_orders
 ```
+
+**⚠️ 重要：店铺配置文件的隐私保护**
+- 仓库中只包含 `template.yaml` 作为示例
+- 你的实际店铺配置（如 `myshop.yaml`）会自动被 `.gitignore` 忽略
+- 这些配置包含商业信息（飞书 Table ID、SKU 规则、发件人信息），不应公开
+- 每个店铺在本地创建自己的配置文件，互不干扰
 
 ### 常用命令
 
