@@ -3,11 +3,44 @@
 """
 import sys
 import argparse
+from pathlib import Path
 from loguru import logger
 from shop_registry import get_shop_registry
 from core.order_processor import OrderProcessor
 from core.fulfillment import FulfillmentProcessor
 from core.tracking import TrackingProcessor
+
+
+def check_git_hooks():
+    """检查 Git Hooks 是否已安装"""
+    project_root = Path(__file__).parent
+    hooks_dir = project_root / ".git" / "hooks"
+
+    # 如果不是 Git 仓库，跳过检查
+    if not hooks_dir.exists():
+        return
+
+    required_hooks = ["prepare-commit-msg", "post-commit"]
+    missing_hooks = [h for h in required_hooks if not (hooks_dir / h).exists()]
+
+    if missing_hooks:
+        print("\n" + "="*60)
+        print("⚠️  警告: Git Hooks 未安装！")
+        print("="*60)
+        print("\nGit Hooks 用于自动管理版本号和标签。")
+        print("没有 hooks，提交店铺代码时不会自动添加版本号。")
+        print("\n缺少以下 hooks:")
+        for hook in missing_hooks:
+            print(f"  - {hook}")
+        print("\n请运行以下命令安装:")
+        print("  ./scripts/install_hooks.sh")
+        print("\n" + "="*60 + "\n")
+
+        response = input("是否继续运行（不推荐）? (y/N): ").strip().lower()
+        if response != 'y':
+            print("\n已取消。请先安装 Git Hooks。")
+            sys.exit(1)
+        print("\n⚠️  继续运行，但提交时不会有自动版本号。\n")
 
 
 def setup_logging(shop_code: str, config: dict):
@@ -68,6 +101,9 @@ def fulfill_orders(shop_code: str, config: dict):
 
 
 def main():
+    # 首先检查 Git Hooks 是否已安装
+    check_git_hooks()
+
     parser = argparse.ArgumentParser(description="Etsy多租户自动化系统")
 
     parser.add_argument(

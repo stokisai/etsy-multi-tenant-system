@@ -114,6 +114,27 @@ etsy-multi-tenant-system/
 
 ## 🚀 快速开始
 
+### ⚠️ 重要：首次使用必须安装 Git Hooks
+
+**在新电脑上克隆仓库后，必须先安装 Git Hooks（只需一次）：**
+
+```bash
+# 克隆仓库后立即运行
+./scripts/install_hooks.sh
+```
+
+**为什么必须安装？**
+- Git Hooks 用于自动管理版本号和标签
+- 没有 hooks，提交店铺代码时不会自动添加版本号
+- 这会导致版本管理混乱
+
+**检查是否已安装：**
+```bash
+./scripts/check_hooks.sh
+```
+
+---
+
 ### ⭐ 方式一：交互式配置工具（推荐）
 
 **最简单的方式！只需回答几个问题，工具自动生成配置。**
@@ -123,10 +144,13 @@ etsy-multi-tenant-system/
 git clone <repository-url> etsy-multi-tenant-system
 cd etsy-multi-tenant-system
 
-# 2. 安装依赖（首次）
+# 2. 安装 Git Hooks（首次，必须！）
+./scripts/install_hooks.sh
+
+# 3. 安装依赖（首次）
 pip install -r requirements.txt
 
-# 3. 运行配置工具
+# 4. 运行配置工具
 python setup_shop.py
 
 # 工具会引导你完成配置，只需回答问题：
@@ -136,7 +160,7 @@ python setup_shop.py
 # - 邮箱地址和密码
 # - 其他配置（首次需要）
 
-# 4. 配置完成，立即使用
+# 5. 配置完成，立即使用
 python main.py --shop your_shop --task process_orders
 ```
 
@@ -153,13 +177,16 @@ python main.py --shop your_shop --task process_orders
 git clone <repository-url> etsy-multi-tenant-system
 cd etsy-multi-tenant-system
 
-# 2. 安装依赖（首次）
+# 2. 安装 Git Hooks（首次，必须！）
+./scripts/install_hooks.sh
+
+# 3. 安装依赖（首次）
 pip install -r requirements.txt
 
-# 3. 创建新店铺配置（5分钟）
+# 4. 创建新店铺配置（5分钟）
 python create_shop.py --shop my_new_shop --name "我的新店铺"
 
-# 4. 编辑配置文件
+# 5. 编辑配置文件
 vim configs/shops/my_new_shop.yaml
 
 # 5. 设置环境变量
