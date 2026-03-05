@@ -23,7 +23,23 @@
 
 ## 📂 脚本列表
 
-### 1. `yunexpress-feishu-shipped.user.js` (v3.2.0)
+### 1. `etsy-fulfiller.user.js` (v2.7.3)
+**功能：** Etsy 后台自动发货填充
+
+**匹配网址：**
+```
+https://www.etsy.com/your/orders/sold*
+```
+
+**主要功能：**
+- 从飞书多维表格读取待处理订单
+- 自动在 Etsy 后台完成发货填充
+- 支持多个飞书表格
+- 自动填写跟踪号
+- 支持运单末端号码
+- 批量处理订单
+
+### 2. `yunexpress-feishu-shipped.user.js` (v3.2.0)
 **功能：** 从云途后台拉取订单信息并同步到飞书
 
 **匹配网址：**
