@@ -93,18 +93,14 @@ logistics:
 # ============================================
 sku_rules:
   # SKU前缀映射到物流商
-  prefix_mapping:
-    "US-": "takesend"    # US- 开头的SKU使用泰嘉物流
-    "EU-": "yunexpress"  # EU- 开头的SKU使用云途物流
-    "CN-": "yunexpress"  # CN- 开头的SKU使用云途物流
+  # 根据你的实际SKU前缀填写，例如：
+  # "YourPrefix": "yunexpress"
+  # "AnotherPrefix": "takesend"
+  prefix_mapping: {}
 
   # 国家映射到物流商（优先级低于SKU前缀）
-  country_mapping:
-    US: "takesend"
-    CA: "takesend"
-    GB: "yunexpress"
-    DE: "yunexpress"
-    FR: "yunexpress"
+  # 可选配置，根据需要填写
+  country_mapping: {}
 
 # ============================================
 # 发件人信息
