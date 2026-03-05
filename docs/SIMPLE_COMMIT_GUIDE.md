@@ -1,5 +1,30 @@
 # 店铺代码提交 - 超简单版
 
+## ⚠️ 首次使用：安装 Git Hooks
+
+**在新电脑上克隆仓库后，需要先安装 Git Hooks（只需要一次）：**
+
+```bash
+cd /Users/stokist/etsy-multi-tenant-system
+./scripts/install_hooks.sh
+```
+
+**输出：**
+```
+=== Git Hooks 安装工具 ===
+正在安装 Git Hooks...
+✅ 已安装: prepare-commit-msg
+✅ 已安装: post-commit
+🎉 Git Hooks 安装完成！
+```
+
+**为什么需要安装？**
+- Git Hooks 存储在 `.git/hooks/` 目录
+- `.git/` 目录不会被提交到 Git 仓库
+- 所以在新电脑上需要手动安装一次
+
+---
+
 ## 🎯 你只需要做3步
 
 ### 1. 修改代码

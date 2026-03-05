@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Git Post-Commit Hook
+# 自动为店铺特定提交打标签
+
+# 检查是否有店铺版本信息
+if [ -f .git/SHOP_VERSION_INFO ]; then
+    # 读取店铺代码和版本号
+    SHOP_INFO=$(cat .git/SHOP_VERSION_INFO)
+    SHOP_CODE=$(echo "$SHOP_INFO" | cut -d':' -f1)
+    VERSION=$(echo "$SHOP_INFO" | cut -d':' -f2)
+
+    # 创建标签
+    TAG_NAME="${SHOP_CODE}-v${VERSION}"
+
+    # 检查标签是否已存在
+    if ! git tag -l | grep -q "^${TAG_NAME}$"; then
+        git tag "$TAG_NAME"
+        echo "✅ 自动创建标签: ${TAG_NAME}"
+    fi
+
+    # 清理临时文件
+    rm .git/SHOP_VERSION_INFO
+fi
+
+exit 0
