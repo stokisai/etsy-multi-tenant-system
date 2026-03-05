@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Etsy Order Fulfiller (多租户版)
 // @namespace    https://github.com/stokisai/etsy-multi-tenant-system
-// @version      3.0.0
-// @description  从飞书多维表格读取待处理订单，自动在 Etsy 完成发货填充（支持多店铺配置）
+// @version      3.1.0
+// @description  从飞书多维表格读取待处理订单，自动在 Etsy 完成发货填充（支持多表格配置）
 // @author       stokist
 // @match        https://www.etsy.com/your/orders/sold*
 // @grant        GM_xmlhttpRequest
@@ -42,20 +42,19 @@
     GM_setValue("feishu_app_secret", app_secret);
   }
 
-  // 获取当前店铺的飞书表格配置
-  function getCurrentTableConfig() {
-    return {
-      app_token: GM_getValue("current_app_token", ""),
-      table_id: GM_getValue("current_table_id", ""),
-      shop_name: GM_getValue("current_shop_name", "未命名店铺"),
-    };
+  // 获取所有飞书表格配置（支持多个表格）
+  function getAllTables() {
+    const tablesJson = GM_getValue("feishu_tables", "[]");
+    try {
+      return JSON.parse(tablesJson);
+    } catch (e) {
+      return [];
+    }
   }
 
-  // 保存当前店铺的飞书表格配置
-  function saveCurrentTableConfig(app_token, table_id, shop_name) {
-    GM_setValue("current_app_token", app_token);
-    GM_setValue("current_table_id", table_id);
-    GM_setValue("current_shop_name", shop_name || "未命名店铺");
+  // 保存所有飞书表格配置
+  function saveAllTables(tables) {
+    GM_setValue("feishu_tables", JSON.stringify(tables));
   }
 
   // 获取延迟时间
@@ -83,21 +82,54 @@
     alert("✅ 飞书凭据已保存！");
   }
 
-  // 配置当前店铺的飞书表格
-  function promptConfigureTable() {
-    const current = getCurrentTableConfig();
+  // 配置多个飞书表格
+  function promptConfigureTables() {
+    const currentTables = getAllTables();
+    
+    let configText = "请输入飞书表格配置（每行一个表格，格式：店铺名称|App Token|Table ID）\n\n";
+    configText += "示例：\n";
+    configText += "大自然草柳编|Cu82bgVDGaNTNsspOs4c6dAJnIc|tblWlIrPD6KZCy8U\n";
+    configText += "迷尚首饰订单|MStWbahj8at2ZvsnheqcJtm2nYb|tblalRxohrGovqXK\n\n";
+    configText += "当前配置：\n";
+    
+    if (currentTables.length === 0) {
+      configText += "（暂无配置）";
+    } else {
+      currentTables.forEach(t => {
+        configText += `${t.name}|${t.app_token}|${t.table_id}\n`;
+      });
+    }
 
-    const shop_name = prompt("请输入店铺名称（用于识别）:", current.shop_name);
-    if (shop_name === null) return;
+    const input = prompt(configText, currentTables.map(t => `${t.name}|${t.app_token}|${t.table_id}`).join("\n"));
+    if (input === null) return;
 
-    const app_token = prompt("请输入飞书 App Token（当前店铺）:", current.app_token);
-    if (app_token === null) return;
+    // 解析输入
+    const lines = input.trim().split("\n").filter(line => line.trim());
+    const tables = [];
+    
+    for (const line of lines) {
+      const parts = line.split("|").map(p => p.trim());
+      if (parts.length !== 3) {
+        alert(`❌ 格式错误：${line}\n\n正确格式：店铺名称|App Token|Table ID`);
+        return;
+      }
+      
+      const [name, app_token, table_id] = parts;
+      if (!name || !app_token || !table_id) {
+        alert(`❌ 配置不完整：${line}`);
+        return;
+      }
+      
+      tables.push({ name, app_token, table_id });
+    }
 
-    const table_id = prompt("请输入飞书 Table ID（当前店铺）:", current.table_id);
-    if (table_id === null) return;
+    if (tables.length === 0) {
+      alert("❌ 至少需要配置一个表格");
+      return;
+    }
 
-    saveCurrentTableConfig(app_token, table_id, shop_name);
-    alert(`✅ 店铺「${shop_name}」的飞书表格配置已保存！\n\nApp Token: ${app_token}\nTable ID: ${table_id}`);
+    saveAllTables(tables);
+    alert(`✅ 已保存 ${tables.length} 个飞书表格配置！\n\n${tables.map(t => `• ${t.name}`).join("\n")}`);
   }
 
   // 配置延迟时间
@@ -119,24 +151,27 @@
   // 显示当前配置
   function showCurrentConfig() {
     const creds = getAppCredentials();
-    const table = getCurrentTableConfig();
+    const tables = getAllTables();
     const delay = getDelaySeconds();
 
-    const message = `
-📋 当前配置
-
-【飞书凭据】（所有店铺共享）
-App ID: ${creds.app_id || "❌ 未配置"}
-App Secret: ${creds.app_secret ? "✅ 已配置" : "❌ 未配置"}
-
-【当前店铺】
-店铺名称: ${table.shop_name}
-App Token: ${table.app_token || "❌ 未配置"}
-Table ID: ${table.table_id || "❌ 未配置"}
-
-【其他设置】
-延迟时间: ${delay} 秒
-    `.trim();
+    let message = `📋 当前配置\n\n`;
+    message += `【飞书凭据】（所有店铺共享）\n`;
+    message += `App ID: ${creds.app_id || "❌ 未配置"}\n`;
+    message += `App Secret: ${creds.app_secret ? "✅ 已配置" : "❌ 未配置"}\n\n`;
+    message += `【飞书表格】（共 ${tables.length} 个）\n`;
+    
+    if (tables.length === 0) {
+      message += "❌ 未配置任何表格\n";
+    } else {
+      tables.forEach((t, i) => {
+        message += `${i + 1}. ${t.name}\n`;
+        message += `   App Token: ${t.app_token}\n`;
+        message += `   Table ID: ${t.table_id}\n`;
+      });
+    }
+    
+    message += `\n【其他设置】\n`;
+    message += `延迟时间: ${delay} 秒`;
 
     alert(message);
   }
@@ -176,20 +211,14 @@ Table ID: ${table.table_id || "❌ 未配置"}
     });
   }
 
-  async function fetchPendingOrders() {
-    const token = await getFeishuToken();
-    const table = getCurrentTableConfig();
-
-    if (!table.app_token || !table.table_id) {
-      throw new Error("请先配置当前店铺的飞书表格（App Token 和 Table ID）");
-    }
-
-    log(`正在从「${table.shop_name}」拉取订单数据...`);
+  // 从单个表格拉取订单
+  async function fetchOrdersFromTable(token, table) {
+    log(`正在从「${table.name}」拉取订单数据...`);
     const url = `https://open.feishu.cn/open-apis/bitable/v1/apps/${table.app_token}/tables/${table.table_id}/records`;
 
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        reject(new Error(`拉取订单超时(30秒)`));
+        reject(new Error(`拉取订单超时(30秒): ${table.name}`));
       }, 30000);
 
       GM_xmlhttpRequest({
@@ -201,13 +230,13 @@ Table ID: ${table.table_id || "❌ 未配置"}
           try {
             const data = JSON.parse(resp.responseText);
             if (data.code !== 0) {
-              reject(new Error(`飞书 API 错误: ${data.msg}`));
+              reject(new Error(`飞书 API 错误 (${table.name}): ${data.msg}`));
               return;
             }
 
             const orders = [];
             const items = data.data?.items || [];
-            log(`返回 ${items.length} 条记录，开始筛选...`);
+            log(`「${table.name}」返回 ${items.length} 条记录，开始筛选...`);
 
             for (const item of items) {
               const fields = item.fields || {};
@@ -229,11 +258,12 @@ Table ID: ${table.table_id || "❌ 未配置"}
                   customerName,
                   status,
                   recordId: item.record_id,
+                  tableName: table.name,  // 记录来源表格
                 });
               }
             }
 
-            log(`✅ 筛选出 ${orders.length} 个待处理订单`);
+            log(`✅ 「${table.name}」筛选出 ${orders.length} 个待处理订单`);
             resolve(orders);
           } catch (err) {
             reject(err);
@@ -247,6 +277,42 @@ Table ID: ${table.table_id || "❌ 未配置"}
     });
   }
 
+  // 从所有表格拉取订单
+  async function fetchPendingOrders() {
+    const token = await getFeishuToken();
+    const tables = getAllTables();
+
+    if (tables.length === 0) {
+      throw new Error("请先配置飞书表格");
+    }
+
+    log(`开始从 ${tables.length} 个表格拉取订单...`);
+    
+    // 并行拉取所有表格的订单
+    const results = await Promise.allSettled(
+      tables.map(table => fetchOrdersFromTable(token, table))
+    );
+
+    // 合并所有成功的结果
+    const allOrders = [];
+    const errors = [];
+
+    results.forEach((result, index) => {
+      if (result.status === "fulfilled") {
+        allOrders.push(...result.value);
+      } else {
+        errors.push(`${tables[index].name}: ${result.reason.message}`);
+      }
+    });
+
+    if (errors.length > 0) {
+      log(`⚠️ 部分表格拉取失败:\n${errors.join("\n")}`);
+    }
+
+    log(`✅ 总共筛选出 ${allOrders.length} 个待处理订单`);
+    return allOrders;
+  }
+
   // ========== 日志 ==========
   function log(msg) {
     console.log(`[Etsy Fulfiller] ${msg}`);
@@ -255,12 +321,12 @@ Table ID: ${table.table_id || "❌ 未配置"}
   // ========== 注册菜单 ==========
   GM_registerMenuCommand("📋 查看当前配置", showCurrentConfig);
   GM_registerMenuCommand("🔑 配置飞书凭据（App ID/Secret）", promptConfigureCredentials);
-  GM_registerMenuCommand("📊 配置当前店铺表格（App Token/Table ID）", promptConfigureTable);
+  GM_registerMenuCommand("📊 配置飞书表格（支持多个）", promptConfigureTables);
   GM_registerMenuCommand("⏱️ 设置延迟时间", promptConfigureDelay);
 
   // ========== 主界面 ==========
   function createUI() {
-    const table = getCurrentTableConfig();
+    const tables = getAllTables();
 
     const container = document.createElement("div");
     container.id = "etsy-fulfiller-container";
@@ -284,10 +350,10 @@ Table ID: ${table.table_id || "❌ 未配置"}
           🚀 Etsy Order Fulfiller
         </h3>
         <div style="font-size: 12px; color: #666; margin-bottom: 10px;">
-          当前店铺：<strong>${table.shop_name}</strong>
+          已配置 <strong>${tables.length}</strong> 个飞书表格
         </div>
         <div style="font-size: 11px; color: #999;">
-          ${table.app_token ? "✅ 已配置飞书表格" : "❌ 未配置飞书表格"}
+          ${tables.length > 0 ? `✅ ${tables.map(t => t.name).join(", ")}` : "❌ 未配置飞书表格"}
         </div>
       </div>
       <div id="etsy-fulfiller-status" style="margin-bottom: 10px; padding: 8px; background: #f5f5f5; border-radius: 4px; font-size: 12px;">
@@ -344,6 +410,7 @@ Table ID: ${table.table_id || "❌ 未配置"}
           <div><strong>${index + 1}. ${order.orderId}</strong></div>
           <div style="color: #666;">跟踪号: ${order.tracking}</div>
           <div style="color: #666;">顾客: ${order.customerName || "N/A"}</div>
+          <div style="color: #999; font-size: 10px;">来源: ${order.tableName}</div>
         </div>
       `).join("");
 
