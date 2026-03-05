@@ -71,8 +71,10 @@ etsy-multi-tenant-system/
 │   └── global.yaml            # 全局配置
 │
 ├── scripts/                   # 用户脚本
-│   ├── tampermonkey/
-│   │   └── etsy-fulfiller.user.js
+│   ├── tampermonkey/          # 浏览器脚本（Windows/Mac通用）
+│   │   ├── README.md          # 脚本说明
+│   │   ├── SETUP_GUIDE.md     # 配置指南
+│   │   └── yunexpress-order-sync.user.js  # 云途后台同步脚本
 │   └── deployment/
 │       └── railway_deploy.sh
 │
@@ -106,6 +108,12 @@ etsy-multi-tenant-system/
 - 本地运行支持
 - Railway云部署
 - Docker容器化
+
+### 5. 浏览器脚本自动化
+- **Tampermonkey 脚本**（Windows/Mac 通用）
+- 云途后台自动拉取运单号、跟踪号、收货状态
+- 自动同步数据到飞书多维表格
+- 👉 [查看脚本配置指南](./scripts/tampermonkey/SETUP_GUIDE.md)
 
 ## 🚀 快速开始
 
@@ -203,8 +211,9 @@ python main.py --shop nature --task process_orders --dry-run
 
 ### 🌟 从这里开始
 - **[🎯 新店铺配置完整指南](./docs/NEW_SHOP_SETUP_GUIDE.md)** - 多环境部署，按顺序配置 ⭐⭐⭐
-- **[🏗️ 多环境部署架构](./docs/MULTI_ENV_DEPLOYMENT.md)** - 理解Windows/Railway/MacBook架构
+- **[🏗️ 系统运行环境架构](./docs/RUNTIME_ARCHITECTURE.md)** - Windows/Railway/MacBook 三大环境详解 ⭐⭐⭐
 - **[🛠️ 交互式配置工具](./docs/SETUP_TOOL_GUIDE.md)** - 自动生成配置，最简单
+- **[🌐 Tampermonkey 脚本配置](./scripts/tampermonkey/SETUP_GUIDE.md)** - 云途后台自动化脚本
 
 ### 新手必读
 - **[🎯 开通流程图](./docs/WORKFLOW.md)** - 可视化流程，一目了然
